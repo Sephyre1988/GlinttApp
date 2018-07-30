@@ -19,6 +19,9 @@ namespace AcademiadecodigoWarehouseApi
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+            .ConfigureLogging(loggingBuilder =>{
+                loggingBuilder.SetMinimumLevel(LogLevel.Trace);
+            })
+            .UseStartup<Startup>();
     }
 }
