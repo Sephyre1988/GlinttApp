@@ -13,7 +13,8 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             int take = 20       //  quantidade de itens a apresentar
         );
 
-    }
+        CreateProductResultModel Create(CreateProductModel model);
 
+    }
 
 }

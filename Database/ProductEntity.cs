@@ -16,7 +16,7 @@ namespace AcademiadecodigoWarehouseApi.Database
          public System.DateTimeOffset UpdatedOn {get;set;}
         public string UpdatedBy{get;set;}
 
-         public System.DateTimeOffset DeletedOn {get;set;}
+         public System.DateTimeOffset? DeletedOn {get;set;}
         public string deletedBy{get;set;}
 
         public long Version{get;set;}
