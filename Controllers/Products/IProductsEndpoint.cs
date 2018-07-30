@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AcademiadecodigoWarehouseApi.Controllers.Products
 {
@@ -13,8 +14,8 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             int take = 20       //  quantidade de itens a apresentar
         );
 
-        CreateProductResultModel Create(CreateProductModel model);
+        IActionResult Create(CreateProductModel model);
+        IActionResult Get(string code);
 
     }
-
 }
