@@ -3,11 +3,12 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AcademiadecodigoWarehouseApi.Controllers.Products {
+namespace AcademiadecodigoWarehouseApi.Controllers.Products
+{
 
     [Route ("api/products")]
 
-    public class ProductsController {
+    public class ProductsController : ControllerBase, IProductsEndpoint {
 
         [Route ("search"), HttpGet]
         public IReadOnlyCollection<ProductSearchItemModel> Search (
@@ -19,6 +20,8 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products {
             int skip = 0,       //  se não vier designado assume estes valores de paginação skip-> itens a saltar antes de apresentar
             int take = 20       //  quantidade de itens a apresentar
         ) {
+
+            var username = User.Identity.Name;
             
             var result = new []{
                 new ProductSearchItemModel{
@@ -74,17 +77,6 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products {
             .AsPage(skip,take)
             .ToList();
         }
-
-    }
-
-    public class ProductSearchItemModel {
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public int CurrentStock { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
-        public string UpdatedBy { get; set;} 
-        public bool IsActive{get;set;}
 
     }
 
