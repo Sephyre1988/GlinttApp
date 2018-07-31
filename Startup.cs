@@ -38,7 +38,6 @@ namespace AcademiadecodigoWarehouseApi
             {
                 new ProductEntity
                 {
-                    Id = 1,
                     Code = "111",
                     Name = "Bola",
                     Description = "fantastico",
@@ -61,7 +60,6 @@ namespace AcademiadecodigoWarehouseApi
 
                 new ProductEntity
                 {
-                    Id = 2,
                     Code = "222",
                     Name = "Bola de futebol",
                     Description = "not so Awesome",

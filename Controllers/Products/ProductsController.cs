@@ -113,7 +113,7 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
                 filterItems = filterItems
                     .Where(e => e.IsActive == isActive.Value);
 
-            return filterItems
+            return filterItems.AsEnumerable()
                 .AsPage(skip, take)
                 .ToList();
         }
@@ -135,36 +135,48 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
                     }
                 );
             {
-                if (MockProducts.Any(e => e.Code.Equals(model.Code.Trim(), StringComparison.CurrentCultureIgnoreCase)))
+                if (_ctx.Set<ProductEntity>().Any(e => e.Code.Equals(model.Code.Trim(), StringComparison.CurrentCultureIgnoreCase)))
                     return Conflict(new
                     {
                         Message = "Duplicated Code"
                     });
 
-                if (MockProducts.Any(e => e.Name.Equals(model.Name.Trim(), StringComparison.CurrentCultureIgnoreCase)))
+                if (_ctx.Set<ProductEntity>().Any(e => e.Name.Equals(model.Name.Trim(), StringComparison.CurrentCultureIgnoreCase)))
                     return Conflict(new
                     {
                         Message = "Duplicated Name"
                     });
 
-                var now = DateTimeOffset.Now;
-                var username = User.Identity.Name;
+               // var tx = _ctx.Database.BeginTransaction();
 
-                var newId = MockProducts.Max(e => e.Id) + 1;
-                MockProducts.Add(new ProductEntity
+                try
                 {
-                    Id = newId,
-                    Code = model.Code,
-                    Name = model.Name,
-                    Description = model.Description,
-                    Price = model.Price,
-                    CreatedOn = now,
-                    CreatedBy = username,
-                    UpdatedOn = now,
-                    UpdatedBy = username
-                });
+                    var now = DateTimeOffset.Now;
+                    var username = User.Identity.Name;
 
-                return Json(new CreateProductResultModel {Id = newId});
+                    var product = new ProductEntity()
+                    {
+                        Code = model.Code,
+                        Name = model.Name,
+                        Description = model.Description,
+                        Price = model.Price,
+                        CreatedOn = now,
+                        CreatedBy = username,
+                        UpdatedOn = now,
+                        UpdatedBy = username
+                    };
+
+                    _ctx.Set<ProductEntity>().Add(product);
+
+                    _ctx.SaveChanges();
+                   // tx.Commit();
+
+                    return Json(new CreateProductResultModel { Id = product.Id });
+                }
+                finally
+                {
+                   // tx.Dispose();
+                }
             }
         }
 
