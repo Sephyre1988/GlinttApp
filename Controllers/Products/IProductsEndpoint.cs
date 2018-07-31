@@ -18,6 +18,7 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
         IActionResult Get(string code);
         IActionResult Update(long id, EditProductModel model);
         IActionResult Deactivate(long id, DeactivateProductModel model);
+        IActionResult Activate(long id, DeactivateProductModel model);
 
     }
 }

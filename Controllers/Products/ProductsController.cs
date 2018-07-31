@@ -283,6 +283,40 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
 
         }
 
+        [Route("activate/{id}")]
+        [HttpPost]
+        public IActionResult Activate([FromRoute] long id, [FromBody] DeactivateProductModel model)
+        {
+            var product = MockProducts.SingleOrDefault(e => e.Id == id);
+
+            if (product == null)
+            {
+                Console.WriteLine("Not found return command");
+                return NotFound();
+            }
+
+            if (product.Version != model.Version)
+            {
+                return Conflict(new
+                {
+                    Message = "there are prior changes"
+                });
+            }
+
+            product.DeletedOn = null;
+            product.UpdatedOn = DateTimeOffset.Now;
+            product.DeletedBy = null;
+            product.UpdatedBy = User.Identity.Name;
+            ++product.Version;
+
+
+            return Json(new
+            {
+                product.Version
+            });
+
+        }
+
 
 
 
