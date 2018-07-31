@@ -58,6 +58,13 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             }
         };
 
+        private readonly WarehouseContext _ctx;
+
+        public ProductsController(WarehouseContext ctx)
+        {
+            _ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
+        }
+
         [Route("search")]
         [HttpGet]
         public IReadOnlyCollection<ProductSearchItemModel> Search(
@@ -76,7 +83,7 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             };
             */
 
-            var filterItems = MockProducts
+            var filterItems = _ctx.Set<ProductEntity>()
                 .Select(e => new ProductSearchItemModel
                 {
                     Code = e.Code,
@@ -201,12 +208,10 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             }
 
             if (product.Version != model.Version)
-            {
                 return Conflict(new
                 {
                     Message = "there are prior changes"
                 });
-            }
 
 
             if (!ModelState.IsValid)
@@ -264,12 +269,10 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             }
 
             if (product.Version != model.Version)
-            {
                 return Conflict(new
                 {
                     Message = "there are prior changes"
                 });
-            }
 
             product.DeletedOn = product.UpdatedOn = DateTimeOffset.Now;
             product.DeletedBy = product.UpdatedBy = User.Identity.Name;
@@ -280,7 +283,6 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             {
                 product.Version
             });
-
         }
 
         [Route("activate/{id}")]
@@ -296,12 +298,10 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             }
 
             if (product.Version != model.Version)
-            {
                 return Conflict(new
                 {
                     Message = "there are prior changes"
                 });
-            }
 
             product.DeletedOn = null;
             product.UpdatedOn = DateTimeOffset.Now;
@@ -314,13 +314,6 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             {
                 product.Version
             });
-
         }
-
-
-
-
-
     }
-
-    }
+}
