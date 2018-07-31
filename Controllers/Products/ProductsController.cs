@@ -70,7 +70,6 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             int take = 20 //  quantidade de itens a apresentar
         )
         {
-            var username = User.Identity.Name;
             /* 
             var result = new []{
                 
@@ -98,7 +97,6 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             if (minPrice.HasValue)
                 filterItems = filterItems
                     .Where(e => e.Price >= minPrice.Value);
-            ;
 
             if (maxPrice.HasValue)
                 filterItems = filterItems
@@ -185,7 +183,7 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
                 UpdatedOn = product.UpdatedOn,
                 UpdatedBy = product.UpdatedBy,
                 DeletedOn = product.DeletedOn,
-                deletedBy = product.deletedBy,
+                deletedBy = product.DeletedBy,
                 Version = product.Version
             });
         }
@@ -200,6 +198,14 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             {
                 Console.WriteLine("Not found return command");
                 return NotFound();
+            }
+
+            if (product.Version != model.Version)
+            {
+                return Conflict(new
+                {
+                    Message = "there are prior changes"
+                });
             }
 
 
@@ -236,7 +242,7 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
             product.Code = model.Code;
             product.UpdatedOn = DateTimeOffset.Now;
             product.UpdatedBy = User.Identity.Name;
-            product.Version = model.Version + 1;
+            ++product.Version;
 
 
             return Json(new
@@ -244,5 +250,43 @@ namespace AcademiadecodigoWarehouseApi.Controllers.Products
                 product.Version
             });
         }
+
+        [Route("delete/{id}")]
+        [HttpPost]
+        public IActionResult Deactivate([FromRoute] long id, [FromBody] DeactivateProductModel model)
+        {
+            var product = MockProducts.SingleOrDefault(e => e.Id == id);
+
+            if (product == null)
+            {
+                Console.WriteLine("Not found return command");
+                return NotFound();
+            }
+
+            if (product.Version != model.Version)
+            {
+                return Conflict(new
+                {
+                    Message = "there are prior changes"
+                });
+            }
+
+            product.DeletedOn = product.UpdatedOn = DateTimeOffset.Now;
+            product.DeletedBy = product.UpdatedBy = User.Identity.Name;
+            ++product.Version;
+
+
+            return Json(new
+            {
+                product.Version
+            });
+
+        }
+
+
+
+
+
     }
-}
+
+    }

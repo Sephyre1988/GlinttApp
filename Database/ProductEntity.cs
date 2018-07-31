@@ -17,11 +17,11 @@ namespace AcademiadecodigoWarehouseApi.Database
         public string UpdatedBy{get;set;}
 
          public System.DateTimeOffset? DeletedOn {get;set;}
-        public string deletedBy{get;set;}
 
         public long Version{get;set;}
 
         public ICollection<StockMovimentEntity> StockMoviments{get;set;}
+        public string DeletedBy { get; set; }
 
         public ProductEntity(){
             StockMoviments = new List<StockMovimentEntity>();
