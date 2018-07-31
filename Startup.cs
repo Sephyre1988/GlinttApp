@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AcademiadecodigoWarehouseApi.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AcademiadecodigoWarehouseApi
@@ -16,6 +18,12 @@ namespace AcademiadecodigoWarehouseApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddDbContext<WarehouseContext>(builder =>
+            {
+                builder.UseInMemoryDatabase("warehouse"); //Passa o nome da base de dados
+
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
